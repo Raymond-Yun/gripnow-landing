@@ -68,7 +68,9 @@ export async function POST(req: Request) {
   try {
     const res = await fetch(webhook, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      // charset 을 반드시 붙입니다. 없으면 구글 앱스 스크립트가 본문을
+      // UTF-8 이 아닌 다른 인코딩으로 읽어서 한글이 깨집니다.
+      headers: { "Content-Type": "application/json; charset=utf-8" },
       body: JSON.stringify(lead),
       redirect: "follow",
     });
