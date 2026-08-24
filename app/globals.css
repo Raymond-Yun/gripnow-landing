@@ -1,0 +1,163 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* ============================================================================
+   브랜드 색 — 색을 바꾸고 싶으면 여기 10줄만 고치세요.
+   콘셉트: "송출 콘솔". 방송 장비의 탈리 라이트(빨강 = 온에어)를 유일한
+   강조색으로 쓰고, 나머지는 전부 조용하게.
+   ========================================================================== */
+:root {
+  --paper: #f1f3f2; /* 페이지 바탕 */
+  --card-paper: #ffffff; /* 카드 바탕 */
+  --ink: #14181b; /* 본문 글자 */
+  --console: #151c1f; /* 콘솔·폼 블록(페이지에서 유일한 어두운 면) */
+  --console-2: #1d262a; /* 콘솔 안쪽 강조 면 */
+  --tally: #dc3418; /* 탈리 레드 — 버튼 바탕·온에어 표시 */
+  --tally-deep: #a8250f; /* 버튼에 마우스 올렸을 때 */
+  --tally-ink: #b82a14; /* 밝은 바탕 위의 빨간 "글자" */
+  --tally-bright: #f4573c; /* 어두운 바탕 위의 빨간 "글자" */
+  --signal: #2c6b5a; /* 연결됨·완료 상태 */
+  --signal-bright: #4fb99c; /* 어두운 바탕 위의 초록 "글자" */
+  --muted-ink: #5c6765; /* 보조 글자 */
+  --line: #dce1df; /* 구분선 */
+}
+
+/* --------------------------------------------------------------------------
+   아래부터는 손댈 필요 없습니다 (Tailwind·shadcn 연결부)
+   ------------------------------------------------------------------------ */
+@theme inline {
+  /* 브랜드 색을 Tailwind 클래스로 노출: bg-paper, text-tally … */
+  --color-paper: var(--paper);
+  --color-card-paper: var(--card-paper);
+  --color-ink: var(--ink);
+  --color-console: var(--console);
+  --color-console-2: var(--console-2);
+  --color-tally: var(--tally);
+  --color-tally-deep: var(--tally-deep);
+  --color-tally-ink: var(--tally-ink);
+  --color-tally-bright: var(--tally-bright);
+  --color-signal: var(--signal);
+  --color-signal-bright: var(--signal-bright);
+  --color-muted-ink: var(--muted-ink);
+  --color-line: var(--line);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-plex-mono);
+  --font-heading: var(--font-sans);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* 본문 글꼴: 기기에 이미 깔린 한글 글꼴을 씁니다(외부 파일 안 받아옴 = 빠름).
+     숫자·영문 강조에만 IBM Plex Mono 를 next/font 로 같이 배포합니다. */
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "맑은 고딕",
+    system-ui, sans-serif;
+
+  --radius: 0.25rem;
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--card-paper);
+  --card-foreground: var(--ink);
+  --popover: var(--card-paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--tally);
+  --primary-foreground: #ffffff;
+  --secondary: #e6eae8;
+  --secondary-foreground: var(--ink);
+  --muted: #e6eae8;
+  --muted-foreground: var(--muted-ink);
+  --accent: #e6eae8;
+  --accent-foreground: var(--ink);
+  --destructive: var(--tally);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--tally);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink;
+    /* 한글이 단어 중간에서 잘리지 않게 */
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  img,
+  svg {
+    max-width: 100%;
+    display: block;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--tally);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  /* 숫자 자리가 흔들리지 않게 */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 어두운 배경 위 드롭다운의 화살표 */
+  .select-caret {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a8b2b0' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+}
+
+/* 사용자가 기기에서 "동작 줄이기"를 켜둔 경우 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
