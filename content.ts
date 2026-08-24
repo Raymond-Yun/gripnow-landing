@@ -6,6 +6,10 @@
    · 고친 뒤에는 터미널에서  npm run build  가 통과하는지만 확인하세요.
    ========================================================================== */
 
+/** 연락처 — 푸터와 오류 안내 문구에 함께 쓰입니다. 여기만 고치면 둘 다 바뀝니다. */
+const CONTACT_EMAIL = 'rayyun@gripcorp.co';
+const CONTACT_PHONE = '010-2935-1448';
+
 export const SITE = {
   /** 브라우저 탭 제목 / 검색 결과 제목 */
   title: '그립나우 — 방송은 한 번, 판매는 다섯 곳에서',
@@ -172,7 +176,7 @@ export const FORM = {
     phone: '휴대폰 번호를 다시 확인해 주세요. (010-0000-0000)',
     email: '이메일 형식을 다시 확인해 주세요.',
     consent: '개인정보 수집·이용에 동의해 주세요.',
-    send: '전송에 실패했습니다. 잠시 후 다시 눌러주세요.',
+    send: `전송에 실패했습니다. 잠시 후 다시 눌러주세요. 계속 안 되면 ${CONTACT_EMAIL} 로 연락 주세요.`,
   },
   done: {
     badge: '접수 완료',
@@ -185,7 +189,7 @@ export const FORM = {
 export const FOOTER = {
   brand: '그립나우',
   company: '주식회사 그립컴퍼니',
-  email: 'rayyun@gripcorp.co',
-  phone: '010-2935-1448',
+  email: CONTACT_EMAIL,
+  phone: CONTACT_PHONE,
   note: '본 페이지에서 수집한 개인정보는 그립나우 상담 목적으로만 사용합니다.',
 } as const;
