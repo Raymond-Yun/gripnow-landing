@@ -44,6 +44,10 @@ export async function POST(req: Request) {
   }
 
   const lead = {
+    /* 이 신청 한 건을 가리키는 고유 번호.
+       앱스 스크립트가 이 번호를 기억해서, 같은 신청이 두 번 오면 무시합니다.
+       (아래 재시도가 중복 행을 만들지 않게 하는 장치) */
+    leadId: crypto.randomUUID(),
     receivedAt: new Date().toISOString(),
     name,
     phone,
@@ -65,8 +69,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, mode: "demo" });
   }
 
-  /* 구글 앱스 스크립트는 동시 호출이 겹치면 간헐적으로 실패합니다.
-     신청을 놓치지 않도록 최대 3번까지 다시 보냅니다. */
+  /* 구글 앱스 스크립트는 "줄은 정상적으로 쓰고 응답만 실패"하는 경우가 있어서,
+     그냥 다시 보내면 같은 신청이 두 줄 들어갑니다.
+     그래서 위 leadId 를 함께 보내고, 앱스 스크립트가 이미 처리한 번호면
+     건너뛰도록 해두었습니다. 그 덕에 아래 재시도가 안전합니다. */
   const ATTEMPTS = 3;
   const TIMEOUT_MS = 9000;
   let lastError: unknown = null;
