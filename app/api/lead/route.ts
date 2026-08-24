@@ -65,23 +65,40 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, mode: "demo" });
   }
 
-  try {
-    const res = await fetch(webhook, {
-      method: "POST",
-      // charset 을 반드시 붙입니다. 없으면 구글 앱스 스크립트가 본문을
-      // UTF-8 이 아닌 다른 인코딩으로 읽어서 한글이 깨집니다.
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify(lead),
-      redirect: "follow",
-    });
-    if (!res.ok) throw new Error(`webhook ${res.status}`);
-    return NextResponse.json({ ok: true, mode: "webhook" });
-  } catch (e) {
-    // 접수는 잃어버리지 않게 로그로 남깁니다
-    console.error("[lead:전송실패]", e, lead);
-    return NextResponse.json(
-      { ok: false, error: "webhook_failed" },
-      { status: 502 },
-    );
+  /* 구글 앱스 스크립트는 동시 호출이 겹치면 간헐적으로 실패합니다.
+     신청을 놓치지 않도록 최대 3번까지 다시 보냅니다. */
+  const ATTEMPTS = 3;
+  const TIMEOUT_MS = 9000;
+  let lastError: unknown = null;
+
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+    try {
+      const res = await fetch(webhook, {
+        method: "POST",
+        // charset 을 반드시 붙입니다. 없으면 구글 앱스 스크립트가 본문을
+        // UTF-8 이 아닌 다른 인코딩으로 읽어서 한글이 깨집니다.
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify(lead),
+        redirect: "follow",
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      });
+      if (!res.ok) throw new Error(`webhook ${res.status}`);
+      if (attempt > 1) console.warn(`[lead:재시도성공] ${attempt}번째에 성공`);
+      return NextResponse.json({ ok: true, mode: "webhook", attempt });
+    } catch (e) {
+      lastError = e;
+      console.warn(`[lead:전송실패 ${attempt}/${ATTEMPTS}]`, e);
+      if (attempt < ATTEMPTS) {
+        await new Promise((r) => setTimeout(r, attempt * 600));
+      }
+    }
   }
+
+  /* 3번 다 실패 — 신청 내용을 로그에 남깁니다. Vercel → 프로젝트 → Logs 에서
+     "lead:최종실패" 로 검색하면 내용을 그대로 복구할 수 있습니다. */
+  console.error("[lead:최종실패]", lastError, JSON.stringify(lead));
+  return NextResponse.json(
+    { ok: false, error: "webhook_failed" },
+    { status: 502 },
+  );
 }
