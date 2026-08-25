@@ -192,7 +192,7 @@ export const ANALYTICS = {
    * 빈 문자열이면 구글 애널리틱스를 아예 싣지 않습니다(쿠키도 안 생깁니다).
    * 받는 법: analytics.google.com → 관리 → 데이터 스트림 → 웹 → 측정 ID
    */
-  gaId: '',
+  gaId: 'G-GQY0J9QF6L',
 } as const;
 
 /** 맨 아래 푸터 — 연락처는 여기서 고칩니다 */
