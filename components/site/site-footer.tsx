@@ -1,4 +1,5 @@
 import { FOOTER } from "@/content";
+import { gaEnabled } from "@/lib/analytics";
 import { Wordmark } from "./wordmark";
 
 /** 전화번호를 숫자만 남긴 형태(tel: 링크용) */
@@ -14,6 +15,9 @@ export function SiteFooter() {
             <Wordmark className="h-[15px] w-auto text-ink" />
             <p className="mt-2">{FOOTER.company}</p>
             <p className="mt-1">{FOOTER.note}</p>
+            {gaEnabled ? (
+              <p className="mt-1">{FOOTER.cookieNote}</p>
+            ) : null}
           </div>
           <div className="lg:text-right">
             <p>

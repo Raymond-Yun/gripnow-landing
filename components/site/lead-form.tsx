@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { trackLeadSubmitted } from "@/lib/analytics";
 import { Eyebrow, SectionTitle, Wrap } from "./bits";
 
 /* 어두운 패널 위에 올라가는 입력칸 공통 모양 */
@@ -73,8 +74,11 @@ export function LeadForm() {
     }
 
     setStatus("sending");
+    const source =
+      new URLSearchParams(window.location.search).get("src") ||
+      new URLSearchParams(window.location.search).get("utm_source") ||
+      "direct";
     try {
-      const params = new URLSearchParams(window.location.search);
       const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -85,13 +89,15 @@ export function LeadForm() {
           brand: brand.trim() || null,
           channels,
           scale: scale || null,
-          source: params.get("src") || params.get("utm_source") || "direct",
+          source,
           referrer: document.referrer || null,
           page: window.location.href,
         }),
       });
       if (!res.ok) throw new Error(String(res.status));
       setStatus("done");
+      // 어느 유입경로가 실제 신청까지 이어졌는지 기록
+      trackLeadSubmitted({ source, channels: channels.length, scale });
     } catch {
       setStatus("idle");
       setError(FORM.errors.send);

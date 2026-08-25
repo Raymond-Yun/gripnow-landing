@@ -185,6 +185,16 @@ export const FORM = {
   },
 } as const;
 
+/** 방문자 통계 */
+export const ANALYTICS = {
+  /**
+   * 구글 애널리틱스(GA4) 측정 ID. `G-` 로 시작합니다.
+   * 빈 문자열이면 구글 애널리틱스를 아예 싣지 않습니다(쿠키도 안 생깁니다).
+   * 받는 법: analytics.google.com → 관리 → 데이터 스트림 → 웹 → 측정 ID
+   */
+  gaId: '',
+} as const;
+
 /** 맨 아래 푸터 — 연락처는 여기서 고칩니다 */
 export const FOOTER = {
   brand: '그립나우',
@@ -192,4 +202,7 @@ export const FOOTER = {
   email: CONTACT_EMAIL,
   phone: CONTACT_PHONE,
   note: '본 페이지에서 수집한 개인정보는 그립나우 상담 목적으로만 사용합니다.',
+  /** 구글 애널리틱스를 켰을 때만 화면에 함께 표시됩니다 */
+  cookieNote:
+    '방문 통계를 위해 구글 애널리틱스를 사용하며, 이 과정에서 쿠키가 저장됩니다. 브라우저 설정에서 거부할 수 있습니다.',
 } as const;
